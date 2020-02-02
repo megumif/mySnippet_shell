@@ -34,13 +34,13 @@ $folderList=Get-ChildItem -Directory
 
 foreach($subjFolders in $folderList) {
 Get-ChildItem -File $subjFolders | Foreach-Object {
-    $infile = $_.name
-    
+    $infile = Join-Path $subjFolders $_.name
+    echo $infile
     if($infile.Substring($infile.Length-3, 3) -match 'vsi'){
     $infile_relatedFolders = '_'+$_.name.Substring(0, $_.name.Length-4)+'_'
     }else{
     }
-    $dir_dest = $(Get-ItemProperty $_).LastWriteTime.ToString("yyyyMMdd")
+    $dir_dest = Join-Path $subjFolders.name $(Get-ItemProperty $_).LastWriteTime.ToString("yyyyMMdd")
     echo $dir_dest
     # test if destination exists
     $result = (Test-Path $dir_dest)
@@ -55,3 +55,28 @@ Get-ChildItem -File $subjFolders | Foreach-Object {
     }
 }
 }
+
+foreach($subjFolders in $folderList) {
+Get-ChildItem -File $subjFolders | Foreach-Object {
+    $infile = $subjFolders.name
+    
+    if($infile.Substring($infile.Length-3, 3) -match 'vsi'){
+    $infile_relatedFolders = '_'+$subjFolders.name.Substring(0, $subjFolders.name.Length-4)+'_'
+    }else{
+    }
+    $dir_dest = $(Get-ItemProperty $subjFolders).LastWriteTime.ToString("yyyyMMdd")
+    echo $dir_dest
+    # test if destination exists
+    $result = (Test-Path $dir_dest)
+        if($result){
+    }else{
+    mkdir $dir_dest
+    } 
+    Move-Item $infile -Destination $dir_dest
+    if ($infile_relatedFolders -eq $null){
+    }else{
+    Move-Item $infile_relatedFolders -Destination $dir_dest
+    }
+}
+}
+
