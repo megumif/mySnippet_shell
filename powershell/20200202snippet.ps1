@@ -30,7 +30,10 @@ Get-ChildItem $indir | Foreach-Object {
 # Olympus image用　
 # オリンパスの顕微鏡は、画像フォルダ('hogehoge.vsi')に付随して画像フォルダとファイル('_hogehoge/stck01/...')がついてくる。
 # この親フォルダの更新時刻が曲者で親フォルダを移動・コピーしていると変わってしまう。そこで親フォルダの更新時刻を画像フォルダのものと同一にする
-Get-ChildItem -File $indir | Foreach-Object {
+$folderList=Get-ChildItem -Directory
+
+foreach($subjFolders in $folderList) {
+Get-ChildItem -File $subjFolders | Foreach-Object {
     $infile = $_.name
     
     if($infile.Substring($infile.Length-3, 3) -match 'vsi'){
@@ -38,6 +41,7 @@ Get-ChildItem -File $indir | Foreach-Object {
     }else{
     }
     $dir_dest = $(Get-ItemProperty $_).LastWriteTime.ToString("yyyyMMdd")
+    echo $dir_dest
     # test if destination exists
     $result = (Test-Path $dir_dest)
         if($result){
@@ -49,4 +53,5 @@ Get-ChildItem -File $indir | Foreach-Object {
     }else{
     Move-Item $infile_relatedFolders -Destination $dir_dest
     }
+}
 }
