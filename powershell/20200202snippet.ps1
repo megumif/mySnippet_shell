@@ -39,8 +39,10 @@ Get-ChildItem -File $subjFolders | Foreach-Object {
     echo $infile
     if($infile.Substring($infile.Length-3, 3) -match 'vsi'){
     $fileBase=[io.path]::GetFileNameWithoutExtension($_)
+    $filter_fileBase='_'+$fileBase+'_'
+    $infile_relatedFolders = Get-ChildItem -Path $subjFolders -Filter $filter_fileBase
     #$infile_relatedFolders = Join-Path $subjFolders "_"+$fileBase+"_"
-    $infile_relatedFolders = Get-childitem - Directory \*$fileBase*
+    #$infile_relatedFolders = Get-childitem $subjFolders -Filter '\*$fileBase.name*'
     write-host "relatedFOlder"
     echo $infile_relatedFolders
     }else{
@@ -55,10 +57,10 @@ Get-ChildItem -File $subjFolders | Foreach-Object {
     mkdir $dir_dest
     } 
     
-    #Move-Item $infile -Destination $dir_dest
-    #if ($infile_relatedFolders -eq $null){
-    #}else{
-    #Move-Item $infile_relatedFolders -Destination $dir_dest
-    #}
+    Move-Item $infile -Destination $dir_dest
+    if ($infile_relatedFolders -eq $null){
+    }else{
+    Move-Item (Join-Path $subjFolders $infile_relatedFolders) -Destination $dir_dest
+    }
 }
 }
