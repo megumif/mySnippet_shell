@@ -21,7 +21,7 @@ Get-ChildItem -File $subjFolders | Foreach-Object {
     
     }else{
     }
-    #$dir_dest = Join-Path $subjFolders $(Get-ItemProperty $(Join-Path  $subjFolders $_)).LastWriteTime.ToString("yyyyMMdd")
+    $dir_dest = Join-Path $subjFolders $(Get-ItemProperty $(Join-Path  $subjFolders $_)).LastWriteTime.ToString("yyyyMMdd")
     ### alternatively - 
     #$dir_dest = Join-Path $subjFolders $(Get-ItemProperty $(Join-Path  $subjFolders $_)).CreationTime.ToString("yyyyMMdd")
     
